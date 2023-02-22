@@ -2,13 +2,9 @@
   "dependencies": {
     "discord.js": "^14.7.1",
     "dotenv": "^16.0.3",
-    "mathjs": "^11.5.1",
-    "node": "^19.6.0"
+    "mathjs": "^11.5.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.20"
-  },
-  "scripts": {
-    "start": "node ."
   }
 }
