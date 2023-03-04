@@ -36,27 +36,27 @@ const onMessageHandler = async msg => {
   if (msg.content.startsWith(`${PREFIX} setup`)) {
     const setChannelRes = await countingChannelData.insertValue(msg.guildId, msg.channelId);
     if (setChannelRes) {
-      msg.reply(`Successfully set active channel to <#${msg.channelId}>`)
+      msg.reply(`Successfully set active channel to <#${msg.channelId}>`);
     } else {
-      msg.reply(`Failed to set active channel to <#${msg.channelId}>`)
+      msg.reply(`Failed to set active channel to <#${msg.channelId}>`);
     }
     return;
   }
 
   const activeChannelId = await countingChannelData.getValue(msg.guildId);
   if (activeChannelId === null) {
-    msg.reply("Go to a channel and enter `mc setup` to begin.")
+    msg.reply("Go to a channel and enter `mc setup` to begin.");
     return;
   }
   if (msg.channelId !== activeChannelId) {
     return;
   }
 
-  const message = msg.content
+  const message = msg.content;
   const userMathParser = await new CustomMathParser(msg.author.id);
   
   if (message.startsWith(`${PREFIX} def `)) {
-    const defineExpression = message.split(`${PREFIX} def `)[1]
+    const defineExpression = message.split(`${PREFIX} def `)[1];
     const [defineRes, defineErr] = userMathParser.define(defineExpression);
     if (defineRes) {
       await msg.reply(`Successfully defined \`${defineExpression.split(/\s*?=\s{0,}/)[0]}\``);
@@ -71,21 +71,21 @@ const onMessageHandler = async msg => {
     if (removeRes) {
       await msg.reply(`Successfully removed variable or function named ${removeVarName}`);
     } else {
-      await msg.reply(`Error when removing \`${removeVarName}\`: ${removeErr}`)
+      await msg.reply(`Error when removing \`${removeVarName}\`: ${removeErr}`);
     }
   }
   
   else if (message.startsWith(`${PREFIX} listvars`)) {
     const listOfVars = userMathParser.getDefines();
-    if (listOfVars.length === 0 || listOfVars[0] === '') {
+    if (listOfVars.length === 0) {
       await msg.reply(`You have no variables or functions defined.`);
-    } else [
-      await msg.reply(`Here are your variables and functions:\`\`\`${listOfVars.join("\n")}\`\`\``)
-    ]
+    } else {
+      await msg.reply(`Here are your variables and functions:\`\`\`${listOfVars.join("\n")}\`\`\``);
+    }
   }
 
   else if (message.startsWith(`${PREFIX} help`)) {
-    await msg.reply(helpString(PREFIX))
+    await msg.reply(helpString(PREFIX));
   }
 
   else {
@@ -95,7 +95,7 @@ const onMessageHandler = async msg => {
     let nextToSave = 1;
     if (!evaluateRes) {
       await msg.reply(`Error in expression: ${evaluateErr}`);
-      nextToSave = nextNumber
+      nextToSave = nextNumber;
     } else if (evaluateNumber === nextNumber) {
       await msg.react("✅");
       nextToSave = nextNumber + 1;
@@ -106,7 +106,7 @@ const onMessageHandler = async msg => {
     }
     const savingStatus = await countingProgressData.insertValue(msg.guildId, nextToSave);
     if (!savingStatus){
-      msg.channel.send("Error saving progress")
+      msg.channel.send("Error saving progress");
     }
   }
 
@@ -118,7 +118,8 @@ client.on(Events.MessageCreate, async msg => {
   try {
     await onMessageHandler(msg)
   } catch (e) {
-    console.warn(e)
+    msg.channel.send(e.message);
+    console.warn(e);
   }
 });
 
