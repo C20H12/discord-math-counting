@@ -101,7 +101,8 @@ const onMessageHandler = async msg => {
       nextToSave = nextNumber + 1;
     } else {
       await msg.react("❌");
-      await msg.reply("Counting failed. Next number reset to 1.")
+      await msg.reply(
+        `Counting failed. (result is ${evaluateNumber} but next is ${nextNumber}) Next number reset to 1.`);
     }
     const savingStatus = await countingProgressData.insertValue(msg.guildId, nextToSave);
     if (!savingStatus){
