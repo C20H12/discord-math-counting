@@ -7,8 +7,8 @@ const CustomMathParser = require("./CustomMathParser");
 const SimpleDb = require("./SimpleDb");
 const isTesting = true; // change to false so it won't clear the data file on run
 
-const countingProgressData = new SimpleDb("progress.txt", isTesting);
-const countingChannelData = new SimpleDb("channels.txt", isTesting);
+const countingProgressData = new SimpleDb("./dataFiles/progress.txt", isTesting);
+const countingChannelData = new SimpleDb("./dataFiles/channels.txt", isTesting);
 
 const helpString = require("./help")
 
@@ -92,16 +92,16 @@ const onMessageHandler = async msg => {
     const savedNumber = await countingProgressData.popValue(msg.guildId) ?? 1;
     const nextNumber = parseInt(savedNumber, 10);
     const [evaluateRes, evaluateNumber, evaluateErr] = userMathParser.evaluate(message);
+    let nextToSave = 1;
     if (!evaluateRes) {
       await msg.reply(`Error in expression: ${evaluateErr}`);
-      return;
-    }
-    let nextToSave = 1;
-    if (evaluateNumber === nextNumber) {
+      nextToSave = nextNumber
+    } else if (evaluateNumber === nextNumber) {
       await msg.react("✅");
       nextToSave = nextNumber + 1;
     } else {
       await msg.react("❌");
+      await msg.reply("Counting failed. Next number reset to 1.")
     }
     const savingStatus = await countingProgressData.insertValue(msg.guildId, nextToSave);
     if (!savingStatus){
