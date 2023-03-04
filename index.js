@@ -1,8 +1,13 @@
 const { Client, Events, GatewayIntentBits } = require("discord.js");
 require("dotenv").config();
 const { DISCORD_TOKEN } = process.env;
-const customMathParser = require("./customMathParser")
-const parser = new customMathParser()
+
+const CustomMathParser = require("./CustomMathParser");
+const parser = new CustomMathParser();
+
+const SimpleDb = require("./SimpleDb");
+const isTesting = true; // change to false so it won't clear the data file on run
+const countingProgressData = new SimpleDb("progress.txt", isTesting)
 
 // Create a new client instance
 const client = new Client({
@@ -10,39 +15,19 @@ const client = new Client({
 });
 
 // When the client is ready, run this code (only once)
-// We use 'c' for the event parameter to keep it separate from the already defined 'client'
 client.once(Events.ClientReady, c => {
   console.log(`Ready! Logged in as ${c.user.tag}`);
 });
 
-let n = 1;
-client.on(Events.MessageCreate, msg => {
+// Run on every message sent
+client.on(Events.MessageCreate, async msg => {
   if (msg.author.bot) return;
+  
+  const savedNumber = await countingProgressData.popValue(msg.channelId) ?? 1;
+  const number = parseInt(savedNumber, 10);
 
-  let sentNumber;
-  try {
-    if (msg.content.startsWith("let ")) {
-      fn = parser.evaluate(msg.content.substring(4))
-      msg.reply(`defined a function \`${fn?.syntax}\``)
-      return;
-    } else {
-      sentNumber = parser.evaluate(msg.content);
-    }
-  } catch (e) {
-    console.log(e)
-    if (e.message.startsWith("Undefined function")) {
-      msg.reply(`function ${e.message.split(' ')[2]} is not defined`);
-    } else {
-      msg.reply("invalid expression");
-    }
-    return;
-  }
-
-  if (sentNumber === n) {
-    msg.reply("right, next number is " + ++n);
-  } else {
-    msg.reply("no, next number is " + n);
-  }
+  console.log(msg.channelId, number)
+  countingProgressData.insertValue(msg.channelId, number + 1)
 });
 
 // Log in to Discord with your client's token

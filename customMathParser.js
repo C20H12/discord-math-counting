@@ -65,11 +65,10 @@ class CustomMathParser {
     return this.#profile.defines;
   }
 
-  saveProfile() {
-
+  async saveProfile() {
     const saveKey = this.#profile.userId;
     const saveValue = this.#profile.defines.join(",");
-    const res = G_database.insertValue(saveKey, saveValue);
+    const res = await G_database.insertValue(saveKey, saveValue);
     if (!res) {
       throw Error("saving failed");
     }
@@ -77,10 +76,6 @@ class CustomMathParser {
 
   getId() {
     return this.#profile.userId
-  }
-
-  logDatabase() {
-    console.log("cmp db " + this.#profile.userId, G_database.bufferKeys, G_database.bufferVals)
   }
 }
 
