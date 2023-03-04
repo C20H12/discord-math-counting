@@ -1,6 +1,6 @@
 const math = require("mathjs");
 const SimpleDb = require("./SimpleDb");
-const G_database = new SimpleDb("parserDatabase.txt");
+const G_database = new SimpleDb("./dataFiles/parserDatabase.txt");
 
 class CustomMathParser {
   #parser = math.parser();
@@ -9,7 +9,7 @@ class CustomMathParser {
 
   async #_new(userId) {
     const res = await G_database.popValue(userId);
-    if (res !== null) {
+    if (res !== null && res !== '') {
       const definesArr = res.split(",");
       for (const v of definesArr) {
         this.#parser.evaluate(v);
@@ -70,7 +70,8 @@ class CustomMathParser {
 
   async saveProfile() {
     const saveKey = this.#profile.userId;
-    const saveValue = this.#profile.defines.join(",");
+    const definesArr = this.#profile.defines
+    const saveValue = definesArr.length !== 0 ? definesArr.join(",") : '';
     const res = await G_database.insertValue(saveKey, saveValue);
     if (!res) {
       throw Error("saving failed");
