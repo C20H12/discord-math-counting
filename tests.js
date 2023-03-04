@@ -18,6 +18,7 @@ const tests = async () =>  {
   console.log(await sb.popValue("k12"))
   console.log(await sb.popValue("k25"))
   console.log(await sb.popValue("k26"))
+
 }
 
 
@@ -42,6 +43,10 @@ const tests2 = async () => {
 
   console.log(mp.evaluate('123*-@1'))
   console.log(mp.define('123=1'))
+  
+  console.log(mp.define("f(x) = x^2"))
+  console.log(mp.evaluate("f(4)"))
+
 
   console.log(mp.define('a = 0 + 1111'))
   console.log(mp.define('b = 0 + 1111'))
@@ -50,14 +55,15 @@ const tests2 = async () => {
 
   await mp.saveProfile()
 
-  // const mp1 = await new CMP("000001")
+  const mp1 = await new CMP("000001")
 
-  // console.log(mp1.getDefines())
+  console.log(mp1.getDefines())
   
+  console.log(mp1.evaluate("f(a)"))
 }
 
 if (module === require.main) {
-  // tests();
+  tests();
   tests2();
 }
 

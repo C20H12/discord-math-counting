@@ -22,7 +22,7 @@ class SimpleDb {
       }
     }
     return null;
-}
+  }
 
   async insertValue(key, value) {
     try {
@@ -32,6 +32,17 @@ class SimpleDb {
       return false;
     }
     return true;
+  }
+
+  async getValue(key) {
+    const filecContent = await fs.promises.readFile(this.fileName, {encoding: "utf-8"});
+    for (const line of filecContent.split("\n")) {
+      const [k, v] = line.split(" <<separator>> ");
+      if (k === key) {
+        return v;
+      }
+    }
+    return null;
   }
 }
 

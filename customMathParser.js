@@ -1,6 +1,6 @@
 const math = require("mathjs");
 const SimpleDb = require("./SimpleDb");
-const G_database = new SimpleDb("database.txt");
+const G_database = new SimpleDb("parserDatabase.txt");
 
 class CustomMathParser {
   #parser = math.parser();
@@ -40,15 +40,18 @@ class CustomMathParser {
 
   evaluate(expression) {
     if (expression.includes("=")) {
-      return [false, "An assignment is not an expression"];
+      return [false, 0, "An assignment is not an expression"];
     }
-    let res = 0;
     try {
-      res = this.#parser.evaluate(expression);
+      const res = this.#parser.evaluate(expression);
+      const numberRes = parseInt(res)
+      if (isNaN(numberRes)) {
+        return [false, 0, "Expression not supported"]
+      }
+      return [true, res, ''];
     } catch (e) {
-      return [false, e.message];
+      return [false, 0, e.message];
     }
-    return [true, res];
   }
 
   remove(varName) {
