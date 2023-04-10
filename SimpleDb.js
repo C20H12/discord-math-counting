@@ -12,11 +12,11 @@ class SimpleDb {
   }
 
   async popValue(key) {
-    const filecContent = await fs.promises.readFile(this.fileName, {encoding: "utf-8"});
-    for (const line of filecContent.split("\n")) {
+    const fileContent = await fs.promises.readFile(this.fileName, {encoding: "utf-8"});
+    for (const line of fileContent.split("\n")) {
       const [k, v] = line.split(" <<separator>> ");
       if (k === key) {
-        const replacedContent = filecContent.replace(new RegExp(`(?<=\n?)${key}.+\n`), "")
+        const replacedContent = fileContent.replace(new RegExp(`(?<=\n?)${key}.+\n`), "")
         await fs.promises.writeFile(this.fileName, replacedContent)
         return v;
       }
@@ -35,8 +35,8 @@ class SimpleDb {
   }
 
   async getValue(key) {
-    const filecContent = await fs.promises.readFile(this.fileName, {encoding: "utf-8"});
-    for (const line of filecContent.split("\n")) {
+    const fileContent = await fs.promises.readFile(this.fileName, {encoding: "utf-8"});
+    for (const line of fileContent.split("\n")) {
       const [k, v] = line.split(" <<separator>> ");
       if (k === key) {
         return v;
