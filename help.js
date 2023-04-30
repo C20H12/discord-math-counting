@@ -3,7 +3,7 @@ const helpString = (prefix) => (
 Commands:
 \`${prefix} def <var | func> = <expression>\` - defines a variable or function
 \`${prefix} remove <var | func>\` - remove a defined value
-\`${prefix} list\` - lists your variables
+\`${prefix} listvars\` - lists your variables
 \`${prefix} setup\` - sets the active channel here
 Syntax references:
 <https://mathjs.org/docs/expressions/syntax.html#operators>

@@ -53,6 +53,13 @@ const onMessageHandler = async msg => {
   }
 
   const message = msg.content;
+
+  const commands = [`def `, `remove `, `listvars`, `help`];
+  if (!commands.includes(message.split(`${PREFIX} `)[1])) {
+    await msg.reply(`Invalid command. Type \`${PREFIX} help\` for help.`);
+    return;
+  }
+
   const userMathParser = await new CustomMathParser(msg.author.id);
   
   if (message.startsWith(`${PREFIX} def `)) {
