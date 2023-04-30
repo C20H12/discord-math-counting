@@ -2,7 +2,7 @@ const { Client, Events, GatewayIntentBits, Message } = require("discord.js");
 require("dotenv").config();
 const { DISCORD_TOKEN } = process.env;
 
-const CustomMathParser = require("./CustomMathParser");
+const CustomMathParser = require("./customMathParser");
 
 const SimpleDb = require("./SimpleDb");
 const isTesting = true; // change to false so it won't clear the data file on run
