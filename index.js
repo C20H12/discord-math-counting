@@ -54,8 +54,8 @@ const onMessageHandler = async msg => {
 
   const message = msg.content;
 
-  const commands = [`def `, `remove `, `listvars`, `help`];
-  if (!commands.includes(message.split(`${PREFIX} `)[1])) {
+  const commands = [`def`, `remove`, `listvars`, `help`];
+  if (message.includes(PREFIX) && !commands.includes(message.split(`${PREFIX} `)[1].split(" ")[0])) {
     await msg.reply(`Invalid command. Type \`${PREFIX} help\` for help.`);
     return;
   }
