@@ -31,7 +31,7 @@ const PREFIX = "mc";
  * @returns 
  */
 const onMessageHandler = async msg => {
-  if (msg.author.bot) return;
+  if (msg.author.bot || msg.content.startsWith("//")) return;
 
   if (msg.content.startsWith(`${PREFIX} setup`)) {
     const setChannelRes = await countingChannelData.insertValue(msg.guildId, msg.channelId);
@@ -96,22 +96,35 @@ const onMessageHandler = async msg => {
   }
 
   else {
-    const savedNumber = await countingProgressData.popValue(msg.guildId) ?? 1;
+
+    const savedNumberAndSender = await countingProgressData.popValue(msg.guildId);
+    const [savedNumber, savedSender] = (savedNumberAndSender ?? "1,").split(",");
+
+    if (savedSender === msg.author.id) {
+      await msg.react("❌");
+      await msg.reply(`Counting failed. You can't count twice in a row. Next number reset to 1`);
+      return;
+    }
+
     const nextNumber = parseInt(savedNumber, 10);
     const [evaluateRes, evaluateNumber, evaluateErr] = userMathParser.evaluate(message);
-    let nextToSave = 1;
+    
+    let savingStatus = true;
+
     if (!evaluateRes) {
       await msg.reply(`Error in expression: ${evaluateErr}`);
-      nextToSave = nextNumber;
-    } else if (evaluateNumber === nextNumber) {
+      savingStatus = await countingProgressData.insertValue(msg.guildId, `${nextNumber},`);
+    } 
+    else if (evaluateNumber === nextNumber) {
       await msg.react("✅");
-      nextToSave = nextNumber + 1;
-    } else {
+      savingStatus = await countingProgressData.insertValue(msg.guildId, `${nextNumber + 1},${msg.author.id}`);
+    } 
+    else {
       await msg.react("❌");
       await msg.reply(
         `Counting failed. (result is ${evaluateNumber} but next is ${nextNumber}) Next number reset to 1.`);
     }
-    const savingStatus = await countingProgressData.insertValue(msg.guildId, nextToSave);
+
     if (!savingStatus){
       msg.channel.send("Error saving progress");
     }
