@@ -1,5 +1,7 @@
 const helpString = (prefix) => (
 `
+Use \`//\` before a string of text to prevent the bot from processing it.
+
 Commands:
 \`${prefix} def <var | func> = <expression>\` - defines a variable or function
 \`${prefix} remove <var | func>\` - remove a defined value
