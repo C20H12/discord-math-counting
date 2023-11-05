@@ -1,6 +1,6 @@
 const math = require("mathjs");
 const SimpleDb = require("./SimpleDb");
-const G_database = new SimpleDb("./dataFiles/parserDatabase.txt");
+const G_database = new SimpleDb("./dataFiles/parserDatabase.txt", false);
 
 class CustomMathParser {
   #parser = math.parser();
@@ -44,7 +44,7 @@ class CustomMathParser {
     }
     try {
       const res = this.#parser.evaluate(expression);
-      const numberRes = parseInt(res)
+      const numberRes = parseInt(res, 10);
       if (isNaN(numberRes)) {
         return [false, 0, "Expression not supported"]
       }
@@ -70,7 +70,7 @@ class CustomMathParser {
 
   async saveProfile() {
     const saveKey = this.#profile.userId;
-    const definesArr = this.#profile.defines
+    const definesArr = this.#profile.defines;
     const saveValue = definesArr.length !== 0 ? definesArr.join(",") : '';
     const res = await G_database.insertValue(saveKey, saveValue);
     if (!res) {
