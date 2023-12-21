@@ -1,5 +1,6 @@
 const { Client, Events, GatewayIntentBits, Message } = require("discord.js");
-require("dotenv").config();
+const path = require("path");
+require("dotenv").config({path: path.resolve(__dirname, '.env')});
 const { DISCORD_TOKEN } = process.env;
 
 const CustomMathParser = require("./CustomMathParser");
